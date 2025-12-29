@@ -9,9 +9,7 @@ export class PrismaService
   implements OnModuleInit, OnModuleDestroy
 {
   constructor(private readonly loggerService: LoggerService) {
-    super({
-      datasourceUrl: process.env['DATABASE_URL'],
-    });
+    super();
     this.loggerService.setContext(PrismaService.name);
   }
 

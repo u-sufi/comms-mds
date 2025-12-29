@@ -31,6 +31,27 @@
 $ pnpm install
 ```
 
+## Database & Prisma
+
+Create a `.env` file using `.env.example` and set your database connection string.
+
+```bash
+$ cp .env.example .env
+```
+
+Run migrations and generate the Prisma client:
+
+```bash
+# generate client
+$ pnpm prisma:generate
+
+# create/apply migrations in development
+$ pnpm prisma:migrate:dev
+
+# apply migrations in production
+$ pnpm prisma:migrate:deploy
+```
+
 ## Compile and run the project
 
 ```bash

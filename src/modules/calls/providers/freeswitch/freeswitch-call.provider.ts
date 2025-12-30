@@ -21,7 +21,7 @@ export class FreeswitchCallProvider implements CallProvider {
     const dialString = this.buildDialString(input);
     if (!dialString) {
       throw new Error(
-        'FreeSWITCH dial string is empty. Set FREESWITCH_DIALSTRING_TEMPLATE.',
+        'FreeSWITCH dial string is empty. Set EXTERNAL_SIP_DOMAIN, INTERNAL_DOMAIN, or FREESWITCH_DIALSTRING_TEMPLATE.',
       );
     }
 
@@ -45,6 +45,16 @@ export class FreeswitchCallProvider implements CallProvider {
   private buildDialString(input: CreateOutboundCallInput): string {
     const template = this.config.dialStringTemplate.trim();
     if (!template) {
+      const externalDomain = this.config.externalSipDomain.trim();
+      if (externalDomain) {
+        return `sofia/external/${input.toNumber}@${externalDomain}`;
+      }
+
+      const internalDomain = this.config.internalDomain.trim();
+      if (internalDomain) {
+        return `sofia/internal/${input.toNumber}@${internalDomain}`;
+      }
+
       return '';
     }
 
@@ -55,7 +65,11 @@ export class FreeswitchCallProvider implements CallProvider {
 
   private buildOriginateParams(input: CreateOutboundCallInput): string {
     const template = this.config.originateParams.trim();
-    const callerIdNumber = this.config.callerIdNumber || input.fromNumber || '';
+    const callerIdNumber =
+      this.config.externalSipCallerNumber ||
+      this.config.callerIdNumber ||
+      input.fromNumber ||
+      '';
     const defaultParams = callerIdNumber
       ? ` {origination_caller_id_number=${callerIdNumber}} `
       : ' ';

@@ -21,6 +21,8 @@ export class TelnyxCallProvider implements CallProvider {
     input: CreateOutboundCallInput,
   ): Promise<CreateOutboundCallResult> {
     const connectionId = input.connectionId || this.telnyxConfig.connectionId;
+    const fromNumber =
+      input.fromNumber || this.telnyxConfig.number || this.telnyxConfig.did;
     if (!connectionId) {
       throw new Error('TELNYX_CONNECTION_ID is not configured');
     }
@@ -37,7 +39,7 @@ export class TelnyxCallProvider implements CallProvider {
       body: JSON.stringify({
         connection_id: connectionId,
         to: input.toNumber,
-        from: input.fromNumber,
+        from: fromNumber,
       }),
     });
 

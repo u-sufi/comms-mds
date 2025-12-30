@@ -309,6 +309,7 @@ export class TelnyxWebhookService {
   private async resolveProject(payload: TelnyxWebhookEvent['data']['payload']) {
     const connectionId = payload.connection_id;
     const toNumber = payload.to;
+    const isInbound = payload.direction !== 'outbound';
 
     if (connectionId) {
       const project = await this.prismaService.project.findFirst({
@@ -320,9 +321,21 @@ export class TelnyxWebhookService {
     }
 
     if (toNumber) {
-      return this.prismaService.project.findFirst({
+      const project = await this.prismaService.project.findFirst({
         where: { telnyxInboundNumber: toNumber },
       });
+      if (project) {
+        return project;
+      }
+
+      const matchesServiceNumber =
+        toNumber === this.telnyxConfig.number ||
+        toNumber === this.telnyxConfig.did;
+      if (isInbound && matchesServiceNumber) {
+        this.loggerService.warn(
+          `Inbound Telnyx call received for service DID ${toNumber} without project mapping`,
+        );
+      }
     }
 
     return null;

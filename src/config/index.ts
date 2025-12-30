@@ -5,3 +5,5 @@ export * from './jwt.config';
 export * from './storage.config';
 export * from './logger.config';
 export * from './telnyx.config';
+export * from './freeswitch.config';
+export * from './calls.config';

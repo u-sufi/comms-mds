@@ -108,3 +108,98 @@ model Transcript {
 
   call Call @relation(fields: [callId], references: [id])
 }
+
+enum AgentStatus {
+  AVAILABLE
+  BUSY
+  OFFLINE
+}
+
+enum CallDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum CallStatus {
+  CREATED
+  RINGING
+  ANSWERED
+  COMPLETED
+  FAILED
+}
+
+enum TranscriptStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  agents      Agent[]
+  calls       Call[]
+}
+
+model Agent {
+  id        String      @id @default(uuid())
+  projectId String
+  name      String
+  email     String?
+  status    AgentStatus @default(OFFLINE)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id])
+  calls   Call[]
+}
+
+model Call {
+  id            String        @id @default(uuid())
+  projectId     String
+  agentId       String?
+  direction     CallDirection
+  status        CallStatus     @default(CREATED)
+  fromNumber    String
+  toNumber      String
+  providerCallId String?
+  startedAt     DateTime?
+  answeredAt    DateTime?
+  endedAt       DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  project     Project     @relation(fields: [projectId], references: [id])
+  agent       Agent?      @relation(fields: [agentId], references: [id])
+  recording   Recording?
+  transcript  Transcript?
+}
+
+model Recording {
+  id             String   @id @default(uuid())
+  callId         String   @unique
+  storageUrl     String
+  durationSeconds Int?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  call Call @relation(fields: [callId], references: [id])
+}
+
+model Transcript {
+  id        String           @id @default(uuid())
+  callId    String           @unique
+  status    TranscriptStatus @default(PENDING)
+  provider  String?
+  text      String?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  call Call @relation(fields: [callId], references: [id])
+}

@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 import { LoggerService } from 'src/logger';
 
@@ -9,7 +11,9 @@ export class PrismaService
 {
   constructor(private readonly loggerService: LoggerService) {
     //const datasourceUrl = process.env['DATABASE_URL'];  have to fix this not loading from env
-    const datasourceUrl = 'postgres://postgres:1234@localhost:5432/comms-db';
+    const datasourceUrl =
+      process.env['DATABASE_URL'] ??
+      'postgres://postgres:1234@localhost:5432/comms-db';
 
     if (!datasourceUrl) {
       throw new Error(
@@ -17,7 +21,9 @@ export class PrismaService
       );
     }
 
-    super({ datasources: { db: { url: datasourceUrl } } });
+    const adapter = new PrismaPg({ connectionString: datasourceUrl });
+
+    super({ adapter });
     this.loggerService.setContext(PrismaService.name);
   }
 

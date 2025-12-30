@@ -18,9 +18,8 @@ export class CreateCallDto {
   @IsEnum(CallDirection)
   direction: CallDirection;
 
-  @IsOptional()
   @IsString()
-  fromNumber?: string;
+  fromNumber: string;
 
   @IsNotEmpty()
   @IsString()

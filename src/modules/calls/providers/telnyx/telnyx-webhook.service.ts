@@ -325,15 +325,6 @@ export class TelnyxWebhookService {
       });
     }
 
-    if (
-      toNumber === this.telnyxConfig.number ||
-      toNumber === this.telnyxConfig.did
-    ) {
-      this.loggerService.warn(
-        'Inbound Telnyx call matched service-level DID but no project mapping was found.',
-      );
-    }
-
     return null;
   }
 }

@@ -12,14 +12,6 @@ export class TelnyxConfig {
   connectionId: string;
 
   @IsString()
-  @Value('TELNYX_NUMBER', { default: '' })
-  number: string;
-
-  @IsString()
-  @Value('TELNYX_DID', { default: '' })
-  did: string;
-
-  @IsString()
   @Value('TELNYX_BASE_URL', { default: 'https://api.telnyx.com/v2' })
   baseUrl: string;
 

@@ -1,8 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return */
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/core/prisma/prisma.service';
 import { CallDirection, CallStatus } from 'src/common/enums/call.enums';
-import { CALL_PROVIDER } from './providers/call-provider.interface';
+import {
+  CALL_PROVIDER,
+  CallProviderConnectionError,
+} from './providers/call-provider.interface';
 import type { CallProvider } from './providers/call-provider.interface';
 import { CreateCallDto } from './dto/create-call.dto';
 
@@ -37,11 +45,19 @@ export class CallsOrchestrationService {
       },
     });
 
-    const providerResult = await this.callProvider.createOutboundCall({
-      fromNumber: dto.fromNumber,
-      toNumber: dto.toNumber,
-      connectionId: project.telnyxConnectionId || undefined,
-    });
+    let providerResult: { providerCallId: string };
+    try {
+      providerResult = await this.callProvider.createOutboundCall({
+        fromNumber: dto.fromNumber,
+        toNumber: dto.toNumber,
+        connectionId: project.telnyxConnectionId || undefined,
+      });
+    } catch (error) {
+      if (error instanceof CallProviderConnectionError) {
+        throw new ServiceUnavailableException(error.message);
+      }
+      throw error;
+    }
 
     return this.prismaService.call.update({
       where: { id: call.id },

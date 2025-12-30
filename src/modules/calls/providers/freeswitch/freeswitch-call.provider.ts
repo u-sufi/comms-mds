@@ -3,6 +3,7 @@ import { connect } from 'net';
 import { FreeswitchConfig } from 'src/config';
 import {
   CallProvider,
+  CallProviderConnectionError,
   CreateOutboundCallInput,
   CreateOutboundCallResult,
 } from '../call-provider.interface';
@@ -101,12 +102,18 @@ export class FreeswitchCallProvider implements CallProvider {
 
       socket.setTimeout(15000, () => {
         cleanup();
-        reject(new Error('FreeSWITCH connection timed out'));
+        reject(
+          new CallProviderConnectionError('FreeSWITCH connection timed out'),
+        );
       });
 
       socket.on('error', (error) => {
         cleanup();
-        reject(error);
+        reject(
+          new CallProviderConnectionError(
+            `FreeSWITCH connection error: ${error.message}`,
+          ),
+        );
       });
 
       socket.on('data', (chunk) => {

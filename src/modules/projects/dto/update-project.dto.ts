@@ -10,6 +10,14 @@ export class UpdateProjectDto {
   description?: string;
 
   @IsOptional()
+  @IsString()
+  telnyxConnectionId?: string;
+
+  @IsOptional()
+  @IsString()
+  telnyxInboundNumber?: string;
+
+  @IsOptional()
   @IsBoolean()
   isActive?: boolean;
 }

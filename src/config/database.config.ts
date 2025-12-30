@@ -20,12 +20,12 @@ export class DatabaseConfig {
 
   @IsNotEmpty()
   @IsString()
-  @Value('DB_PASSWORD', { default: 'postgres' })
+  @Value('DB_PASSWORD', { default: '1234' })
   password: string;
 
   @IsNotEmpty()
   @IsString()
-  @Value('DB_NAME', { default: 'comms_engine' })
+  @Value('DB_NAME', { default: 'comms-db' })
   database: string;
 
   @IsBoolean()

@@ -3,14 +3,18 @@ import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { CallsService } from './calls.service';
 import { CreateCallDto } from './dto/create-call.dto';
 import { UpdateCallDto } from './dto/update-call.dto';
+import { CallsOrchestrationService } from './calls-orchestration.service';
 
 @Controller('calls')
 export class CallsController {
-  constructor(private readonly callsService: CallsService) {}
+  constructor(
+    private readonly callsService: CallsService,
+    private readonly callsOrchestrationService: CallsOrchestrationService,
+  ) {}
 
   @Post()
   create(@Body() dto: CreateCallDto) {
-    return this.callsService.create(dto);
+    return this.callsOrchestrationService.create(dto);
   }
 
   @Get()

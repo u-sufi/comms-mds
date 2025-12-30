@@ -43,6 +43,8 @@ model Project {
   id          String   @id @default(uuid())
   name        String
   description String?
+  telnyxConnectionId String?
+  telnyxInboundNumber String?
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

@@ -9,7 +9,15 @@ export class PrismaService
   implements OnModuleInit, OnModuleDestroy
 {
   constructor(private readonly loggerService: LoggerService) {
-    super();
+    const datasourceUrl = process.env['DATABASE_URL'];
+
+    if (!datasourceUrl) {
+      throw new Error(
+        'DATABASE_URL is not set. Define it in your environment before starting the service.',
+      );
+    }
+
+    super({ datasourceUrl });
     this.loggerService.setContext(PrismaService.name);
   }
 

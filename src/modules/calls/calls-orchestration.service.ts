@@ -2,10 +2,8 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/core/prisma/prisma.service';
 import { CallDirection, CallStatus } from 'src/common/enums/call.enums';
-import {
-  CALL_PROVIDER,
-  CallProvider,
-} from './providers/call-provider.interface';
+import { CALL_PROVIDER } from './providers/call-provider.interface';
+import type { CallProvider } from './providers/call-provider.interface';
 import { CreateCallDto } from './dto/create-call.dto';
 
 @Injectable()

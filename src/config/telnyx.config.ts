@@ -24,4 +24,14 @@ export class TelnyxConfig {
   @IsString()
   @Value('TELNYX_WEBHOOK_SECRET', { default: '' })
   webhookSecret: string;
+
+  @IsOptional()
+  @IsString()
+  @Value('TELNYX_NUMBER', { default: '' })
+  number: string;
+
+  @IsOptional()
+  @IsString()
+  @Value('TELNYX_DID', { default: '' })
+  did: string;
 }

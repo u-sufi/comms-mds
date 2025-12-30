@@ -17,7 +17,7 @@ export class PrismaService
       );
     }
 
-    super({ datasourceUrl });
+    super({ datasources: { db: { url: datasourceUrl } } });
     this.loggerService.setContext(PrismaService.name);
   }
 

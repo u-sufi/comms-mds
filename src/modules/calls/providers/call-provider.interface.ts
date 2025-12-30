@@ -15,4 +15,11 @@ export interface CallProvider {
   ): Promise<CreateOutboundCallResult>;
 }
 
+export class CallProviderConnectionError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'CallProviderConnectionError';
+  }
+}
+
 export const CALL_PROVIDER = Symbol('CALL_PROVIDER');
